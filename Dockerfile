@@ -27,7 +27,7 @@ WORKDIR /app/frontend
 ENV NODE_ENV=production
 
 # Copy only the necessary files from the builder
-COPY --from=builder /app/frontend/next.config.mjs ./
+COPY --from=builder /app/frontend/*.config.* ./
 COPY --from=builder /app/frontend/package*.json ./
 COPY --from=builder /app/frontend/public ./public
 COPY --from=builder /app/frontend/.next ./.next
