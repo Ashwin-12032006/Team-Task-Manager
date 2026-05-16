@@ -2,13 +2,14 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
-  // Clear DB
-  await prisma.task.deleteMany({});
-  await prisma.boardColumn.deleteMany({});
-  await prisma.projectMember.deleteMany({});
-  await prisma.pastWork.deleteMany({});
-  await prisma.project.deleteMany({});
-  await prisma.user.deleteMany({});
+  // Check if data exists
+  const userCount = await prisma.user.count();
+  if (userCount > 0) {
+    console.log("Database already has data, skipping seed.");
+    return;
+  }
+
+  console.log("Seeding initial data...");
 
   // 1. Create Users
   const user1 = await prisma.user.create({
