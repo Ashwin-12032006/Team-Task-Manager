@@ -14,9 +14,10 @@ RUN npm install
 # Copy the rest of the frontend code
 COPY frontend/ ./
 
-# Generate Prisma Client and build the Next.js app
-# We skip linting to ensure the build succeeds
+# Generate Prisma Client (doesn't need DATABASE_URL)
 RUN npx prisma generate
+
+# Build the Next.js app
 RUN npm run build -- --no-lint
 
 # Production Stage
@@ -36,5 +37,5 @@ COPY --from=builder /app/frontend/prisma ./prisma
 
 EXPOSE 3000
 
-# Set the start command
-CMD ["npm", "start"]
+# Set the start command to sync DB, seed, and then start
+CMD npx prisma db push --accept-data-loss && node prisma/seed.js && npm start
