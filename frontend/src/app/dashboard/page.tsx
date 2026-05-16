@@ -79,6 +79,17 @@ export default function DashboardPage() {
         <div className="flex justify-center py-20 text-indigo-400">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
         </div>
+      ) : error || (projects && projects.error) ? (
+        <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-8 text-center space-y-4 max-w-2xl mx-auto">
+          <h3 className="text-xl font-bold text-red-400">Database Connection Error</h3>
+          <p className="text-slate-400">We couldn't connect to the database. Please make sure your <code className="bg-slate-950 px-2 py-1 rounded text-indigo-400">DATABASE_URL</code> is set correctly in Railway variables.</p>
+          <button 
+            onClick={() => mutate()}
+            className="px-6 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-xl transition-all font-medium"
+          >
+            Retry Connection
+          </button>
+        </div>
       ) : (
         <motion.div
           variants={containerVariants}
@@ -86,7 +97,7 @@ export default function DashboardPage() {
           animate="show"
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
         >
-          {projects?.map((project: any) => (
+          {Array.isArray(projects) && projects.map((project: any) => (
             <motion.div key={project.id} variants={itemVariants}>
               <Link href={`/dashboard/project/${project.id}`} className="block group">
                 <div className="glass-card overflow-hidden hover:border-slate-600 transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1">
@@ -126,10 +137,10 @@ export default function DashboardPage() {
                       <div className="flex items-center justify-between pt-4 border-t border-slate-800">
                         <div className="flex items-center gap-1.5 text-slate-400 text-sm">
                           <Users className="w-4 h-4" />
-                          <span>{project._count.members} members</span>
+                          <span>{project._count?.members || 0} members</span>
                         </div>
                         <div className="flex -space-x-2">
-                          {[...Array(Math.min(project._count.members, 3))].map((_, i) => (
+                          {[...Array(Math.min(project._count?.members || 0, 3))].map((_, i) => (
                             <div
                               key={i}
                               className="w-7 h-7 rounded-full bg-slate-700 border-2 border-slate-900 flex items-center justify-center text-[10px] font-bold text-slate-300"
@@ -137,9 +148,9 @@ export default function DashboardPage() {
                               {String.fromCharCode(65 + i)}
                             </div>
                           ))}
-                          {project._count.members > 3 && (
+                          {(project._count?.members || 0) > 3 && (
                             <div className="w-7 h-7 rounded-full bg-slate-800 border-2 border-slate-900 flex items-center justify-center text-[10px] font-bold text-slate-400">
-                              +{project._count.members - 3}
+                              +{(project._count?.members || 0) - 3}
                             </div>
                           )}
                         </div>
