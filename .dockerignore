@@ -1,0 +1,8 @@
+node_modules
+frontend/node_modules
+.next
+frontend/.next
+.git
+.gitignore
+README.md
+DEMO_SCRIPT.md
